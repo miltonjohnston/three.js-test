@@ -5,7 +5,7 @@ class Sizes {
         if (Sizes.instance) return Sizes.instance;
         
         if (!DOMElement) {
-            console.warn('No domelement specified!');
+            console.warn('No dom element specified!');
             return;
         }
 

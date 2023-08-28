@@ -1,5 +1,5 @@
 {
-  "name": "neon-runner-2",
+  "name": "playground",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -15,6 +15,7 @@
     "vite": "^4.2.0"
   },
   "dependencies": {
+    "gsap": "^3.12.2",
     "three": "^0.151.3"
   }
 }

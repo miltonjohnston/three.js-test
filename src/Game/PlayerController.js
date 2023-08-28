@@ -1,7 +1,6 @@
 import * as THREE from 'three'
 
 import CameraController from "./CameraController.js"
-import Game from './Game.js';
 import KinematicCharacterController from "./KinematicCharacterController.js"
 
 class PlayerController {
@@ -16,14 +15,14 @@ class PlayerController {
         }
         this._physics = physics;
 
-        this.spawn_position = new THREE.Vector3(0, 5, 0);
+        this.spawn_position = new THREE.Vector3(0, 2, 0);
 
         this.player_mesh = new THREE.Mesh(
             new THREE.BoxGeometry(2, 2, 2),
             new THREE.MeshBasicMaterial({ color: 0x00ccff })
         );
         this.player_mesh.position.copy(this.spawn_position);
-        
+
         this._camera_controller = new CameraController(this._camera);
         this._kinematic_character_controller = new KinematicCharacterController(this.player_mesh.position, this.player_mesh.quaternion);
 
@@ -40,7 +39,7 @@ class PlayerController {
 
         this._direction = new THREE.Vector3();
         this._tmp_vec = new Ammo.btTransform();
-    
+
         document.addEventListener('keydown', e => this.OnKeyDown(e));
         document.addEventListener('keyup', e => this.OnKeyUp(e));
         document.addEventListener('touchstart', e => this.OnTapScreen(e));
@@ -51,11 +50,6 @@ class PlayerController {
     }
 
     OnKeyDown(e) {
-        // if (e.code == 'KeyP') {
-        //     Game.TogglePause();
-        //     return;
-        // }
-        
         if (this._keys[e.code] != null) {
             this._keys[e.code] = true;
         }
@@ -103,37 +97,29 @@ class PlayerController {
 
         /* Check if Player has Lost */
         if (pos.y() <= -40) {
-            Game.Lose();
-            // this._kinematic_character_controller.Teleport(this.spawn_position);
+            this._kinematic_character_controller.Teleport(this.spawn_position);
             return;
         }
 
         /* Go Forward Only */
-        if (Game.has_started) {
-            direction.add(this.GetForwardVector().multiplyScalar(t * this._kinematic_character_controller.player_speed));
-
-            if (document.pointerLockElement == document.body) {
-                /* Free Roam Controls */
-                // if (this._keys["KeyW"]) direction.add(this.GetForwardVector().multiplyScalar(t * this._kinematic_character_controller.player_speed));
-                // if (this._keys["KeyS"]) direction.sub(this.GetForwardVector().multiplyScalar(t * this._kinematic_character_controller.player_speed));
-                // if (this._keys["KeyA"]) direction.sub(this.GetSideVector().multiplyScalar(t * this._kinematic_character_controller.player_speed));
-                // if (this._keys["KeyD"]) direction.add(this.GetSideVector().multiplyScalar(t * this._kinematic_character_controller.player_speed));
-                if (this._keys["Space"]) this._kinematic_character_controller.Jump();
-            }
-            
-            /* Move Player in Direction and Get New Transform */
+        if (document.pointerLockElement == document.body) {
+            /* Free Roam Controls */
+            if (this._keys["KeyW"]) direction.add(this.GetForwardVector().multiplyScalar(t * this._kinematic_character_controller.player_speed));
+            if (this._keys["KeyS"]) direction.sub(this.GetForwardVector().multiplyScalar(t * this._kinematic_character_controller.player_speed));
+            if (this._keys["KeyA"]) direction.sub(this.GetSideVector().multiplyScalar(t * this._kinematic_character_controller.player_speed));
+            if (this._keys["KeyD"]) direction.add(this.GetSideVector().multiplyScalar(t * this._kinematic_character_controller.player_speed));
+            if (this._keys["Space"]) this._kinematic_character_controller.Jump();
         }
-        
+
+        /* Move Player in Direction and Get New Transform */
         const newTransform = this._kinematic_character_controller.Move(direction);
-        
+
         /* Update Camera and Player Position */
         const newPos = newTransform.getOrigin();
         const newPos3 = new THREE.Vector3(newPos.x(), newPos.y(), newPos.z());
-        
+
         this.player_mesh.position.copy(newPos3);
         this._camera.position.copy(newPos3);
-        
-        // this._camera.position.set(newPos3.x, newPos3.y + 5, newPos3.z - 5); // Third person
 
         // Get Collisions
         // this._kinematic_character_controller.GetCollidingObjects().forEach(o => console.log(o.kB));

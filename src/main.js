@@ -1,55 +1,22 @@
-import Assets from './Game/Assets.js'
-import DOMElements from './DOMElements.js'
-import Game from './Game/Game.js'
-import Loader from './Game/Loader.js'
-import '../style.css'
+import Assets from './Game/utils/Assets.js';
+import Game from './Game/Game.js';
+import Loader from './Game/utils/Loader.js';
+import '../index.css';
 
 let GAME;
 
-new Loader().LoadAll(Assets.textures, res => {
-    console.log(`Finished loading resources.`);
+(async() => {
+    try {
+        const loader = new Loader();
 
-    Ammo()
-        .then(lib => {
-            Ammo = lib;
-            console.log(`Finished loading Ammo JS.`);
+        const result = await loader.LoadAll(Object.keys(Assets).map(k => Assets[k]));
+        console.log(`Finished loading resources.`, result);
 
-            DOMElements.screens.loadingScreen.classList.add('hidden');
-
-            DOMElements.screens.mainScreen.classList.remove('hidden');
-
-            // DOMElements.screens.gameScreen.classList.remove('hidden'); // DEV
-            // GAME = new Game(); // DEV
-        })
-        .catch(console.error);
-})
-
-DOMElements.buttons.playButton.addEventListener('click', () => {
-    DOMElements.screens.mainScreen.classList.add('hidden');
-    DOMElements.screens.gameOverScreen.classList.add('hidden');
-    DOMElements.screens.gameScreen.classList.remove('hidden');
-    DOMElements.screens.gameStartScreen.classList.remove('hidden');
-
-    if (!GAME) {
+        Ammo = await Ammo()            
+        console.log(`Finished loading Ammo JS.`);
+                
         GAME = new Game();
+    } catch (err) {
+        console.log(err);
     }
-    else GAME.Restart();
-});
-
-DOMElements.screens.gameStartScreen.addEventListener('click', () => {
-    DOMElements.screens.gameStartScreen.classList.add('hidden');
-});
-
-DOMElements.buttons.retryButton.addEventListener('click', () => {
-    if (!GAME) return;
-
-    DOMElements.screens.gameOverScreen.classList.add('hidden');
-    DOMElements.screens.gameStartScreen.classList.remove('hidden');
-    
-    GAME.Restart();
-});
-
-DOMElements.buttons.exitButton.addEventListener('click', () => {
-    DOMElements.screens.gameScreen.classList.add('hidden');
-    DOMElements.screens.mainScreen.classList.remove('hidden');
-});
+})();

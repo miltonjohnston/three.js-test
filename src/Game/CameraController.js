@@ -19,7 +19,7 @@ class CameraController {
 
         document.addEventListener("touchstart", e => this.OnTouchStart(e));
         document.addEventListener("touchmove", e => this.OnTouchMove(e));
-        DOMElements.screens.gameScreen.addEventListener("click", () => this.OnMouseDown());
+        document.addEventListener("click", () => this.OnMouseDown());
         document.addEventListener("mousemove", e => this.OnMouseMove(e));
     }
   
@@ -60,8 +60,6 @@ class CameraController {
 
     OnMouseDown() {
         document.body.requestPointerLock();
-        DOMElements.screens.gameStartScreen.classList.add('hidden');
-        Game.has_started = true;
     } 
 
     OnMouseMove(e) {

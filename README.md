@@ -1,5 +1,5 @@
-# Neon Runner Improved
-An improved version of my previous Neon Runner game using Three JS.
+# Playground
+A playground that holds all my fun and unique creations over the course of my ThreeJS journey!
 
 ## Setup
 Install dependencies
